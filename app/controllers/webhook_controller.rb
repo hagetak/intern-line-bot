@@ -40,7 +40,7 @@ class WebhookController < ApplicationController
           end
           SlackNotificationService.info("[勤怠情報]", message['text'])
           rescue => e
-            mesasge['text'] = "数字送ってクレメンス"
+            message['text'] = "数字送ってクレメンス"
           end
           client.reply_message(event['replyToken'], message)
         when Line::Bot::Event::MessageType::Image, Line::Bot::Event::MessageType::Video
@@ -57,6 +57,6 @@ class WebhookController < ApplicationController
   private
 
   def validate_message!(message)
-    raise "invalid" unless input =~ /^[0-9]+$/
+    # raise "invalid" unless input =~ /^[0-9]+$/
   end
 end
