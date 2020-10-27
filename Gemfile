@@ -46,4 +46,3 @@ gem 'bootsnap', require: false
 gem 'listen', group: :development
 
 gem 'slack-notifier'            # slack通知
-gem 'slack-api'                 # slackAPI利用
