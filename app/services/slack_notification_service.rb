@@ -24,6 +24,7 @@ class SlackNotificationService
         notifier.post(attachments: {title: title, text: message, color: param[:color]}, channel: param[:channel])
       rescue => e
         Rails.logger.error("Slack通知に失敗しました。title:#{title}, message:#{message}")
+        Rails.logger.error(e)
       end
     end
   end
