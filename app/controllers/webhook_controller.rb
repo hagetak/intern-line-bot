@@ -3,6 +3,8 @@ require 'line/bot'
 class WebhookController < ApplicationController
   protect_from_forgery except: [:callback] # CSRF対策無効化
 
+  SUSPENSION_THRESHOLD = 37.5
+
   def client
     @client ||= Line::Bot::Client.new { |config|
       config.channel_secret = ENV["LINE_CHANNEL_SECRET"]
@@ -28,6 +30,13 @@ class WebhookController < ApplicationController
             type: 'text',
             text: event.message['text']
           }
+          validate_message(event.message['text'])
+
+          if event.message['text'] >= SUSPENSION_THRESHOLD
+            message['text'] = "出社OK"
+          else
+            message['text'] = "出社NG"
+          end
           client.reply_message(event['replyToken'], message)
         when Line::Bot::Event::MessageType::Image, Line::Bot::Event::MessageType::Video
           response = client.get_message_content(event.message['id'])
@@ -37,5 +46,10 @@ class WebhookController < ApplicationController
       end
     }
     head :ok
+  end
+
+  private
+  def validate_message!(message)
+    message
   end
 end
