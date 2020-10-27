@@ -33,7 +33,7 @@ class WebhookController < ApplicationController
           }
           begin
             validate_message!(event.message['text'])
-          if event.message['text'] >= SUSPENSION_THRESHOLD
+          if event.message['text'].to_i >= SUSPENSION_THRESHOLD
             message['text'] = "出社OK"
           else
             message['text'] = "出社NG"
@@ -41,6 +41,7 @@ class WebhookController < ApplicationController
           SlackNotificationService.info("[勤怠情報]", message['text'])
           rescue => e
             message['text'] = "数字送ってクレメンス"
+            Rails.logger.error("Slack通知に失敗しました。#{e.message}")
           end
           client.reply_message(event['replyToken'], message)
         when Line::Bot::Event::MessageType::Image, Line::Bot::Event::MessageType::Video
