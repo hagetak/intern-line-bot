@@ -21,7 +21,7 @@ class SlackNotificationService
       }
       notifier = Slack::Notifier.new(ENV.fetch("SLACK_WEBHOOK_URL"), http_options: {open_timeout: DEFAULT_TIMEOUT})
       begin
-        notifier.post(attachments: {title: title, text: message, color: param[:color]}, channel: param[:channel])
+        notifier.post(attachments: {title: title, text: message, color: params[:color]}, channel: params[:channel])
       rescue => e
         Rails.logger.error("Slack通知に失敗しました。title:#{title}, message:#{message}")
         Rails.logger.error(e)
