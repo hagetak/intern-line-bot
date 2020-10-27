@@ -38,6 +38,7 @@ class WebhookController < ApplicationController
           else
             message['text'] = "出社NG"
           end
+          SlackNotificationService.info("[勤怠情報]", message['text'])
           rescue => e
             mesasge['text'] = "数字送ってクレメンス"
           end
