@@ -20,6 +20,7 @@ class WebhookController < ApplicationController
       head 470
     end
 
+
     events = client.parse_events_from(body)
     events.each { |event|
       case event
@@ -27,15 +28,18 @@ class WebhookController < ApplicationController
         case event.type
         when Line::Bot::Event::MessageType::Text
           message = {
-            type: 'text',
-            text: event.message['text']
+              type: 'text',
+              text: event.message['text']
           }
-          validate_message(event.message['text'])
-
+          begin
+            validate_message!(event.message['text'])
           if event.message['text'] >= SUSPENSION_THRESHOLD
             message['text'] = "出社OK"
           else
             message['text'] = "出社NG"
+          end
+          rescue => e
+            mesasge['text'] = "数字送ってクレメンス"
           end
           client.reply_message(event['replyToken'], message)
         when Line::Bot::Event::MessageType::Image, Line::Bot::Event::MessageType::Video
@@ -45,11 +49,13 @@ class WebhookController < ApplicationController
         end
       end
     }
+
     head :ok
   end
 
   private
+
   def validate_message!(message)
-    message
+    raise "invalid" unless input =~ /^[0-9]+$/
   end
 end
