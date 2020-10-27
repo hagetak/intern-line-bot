@@ -33,10 +33,10 @@ class WebhookController < ApplicationController
           }
           begin
             validate_message!(event.message['text'])
-          if event.message['text'].to_i >= SUSPENSION_THRESHOLD
-            message['text'] = "出社OK"
-          else
+          if event.message['text'].to_f >= SUSPENSION_THRESHOLD
             message['text'] = "出社NG"
+          else
+            message['text'] = "出社OK"
           end
           SlackNotificationService.info("[勤怠情報]", message['text'])
           rescue => e
